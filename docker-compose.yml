@@ -1,0 +1,52 @@
+---
+version: "3.9"
+
+services:
+  ytdlm:
+    image: tzahi12345/youtubedl-material:${YTDLM_TAG:-nightly}
+    healthcheck:
+      interval: 15s
+      retries: 3
+      test: wget --no-verbose --tries=1 --spider http://localhost:17442/ || exit 1
+      timeout: 5s
+    environment:
+      ALLOW_CONFIG_MUTATIONS: "true"
+      GID: ${GID:-1000}
+      UID: ${UID:-1000}
+      write_ytdl_config: "true"
+      ytdl_allow_advanced_download: "true"
+      ytdl_custom_args: >-
+        ${ytdl_custom_args:---sub-lang=en,en-US,en-GB,ja,live_chat,,--sub-format='srv3/json/best',,--embed-sub,,--embed-thumbnail,,--add-metadata,,--write-description}
+      ytdl_custom_downloading_agent: "aria2c"
+      ytdl_default_downloader: "yt-dlp"
+      ytdl_default_file_output: ${ytdl_default_file_output:-"%(channel).32s [%(channel_id)s]/%(title).200s [%(id)s]"}
+      ytdl_default_theme: "dark"
+      ytdl_url: "https://${YTDLM_HOSTNAME:-localhost}"
+      ytdl_use_default_downloading_agent: "false"
+      ytdl_use_local_db: "true"
+      ytdl_use_youtube_api: ${ytdl_use_youtube_api:-false}
+      ytdl_youtube_api_key:
+    labels:
+      traefik.enable: true
+      traefik.http.routers.yt.entrypoints: websecure
+      traefik.http.routers.yt.middlewares: ${TRAEFIK_MIDDLEWARES:-}
+      traefik.http.routers.yt.rule: "Host(`${YTDLM_HOSTNAME:-localhost}`)"
+      traefik.http.routers.yt.service: yt
+      traefik.http.routers.yt.tls: true
+      traefik.http.services.yt.loadbalancer.server.port: 17442
+    networks:
+      - traefik
+    volumes:
+      - ${APPDATA_VOLUME:-appdata}:/app/appdata
+      - ${AUDIO_VOLUME:-audio}:/app/audio
+      - ${SUBSCRIPTIONS_VOLUME:-subscriptions}:/app/subscriptions
+      - ${VIDEO_VOLUME:-video}:/app/video
+    restart: unless-stopped
+networks:
+  traefik:
+    external: true
+volumes:
+  appdata:
+  audio:
+  subscriptions:
+  video:
