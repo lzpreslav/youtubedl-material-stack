@@ -1,6 +1,6 @@
 # youtubedl-material-stack
 
-[YoutubeDL-Material](https://github.com/Tzahi12345/YoutubeDL-Material) stack used for self-hosting services. Setup towards using Traefik as reverse proxy and
+[YoutubeDL-Material](https://github.com/Tzahi12345/YoutubeDL-Material) stack used for self-hosting a youtube-dl Web UI. Setup towards using Traefik as reverse proxy and JSON file as a database.
 
 Required ENV vars with their description:
 
