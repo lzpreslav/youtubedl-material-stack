@@ -14,7 +14,8 @@ services:
         ${ytdl_custom_args:---sub-lang=en,en-US,en-GB,ja,live_chat,,--sub-format='srv3/json/best',,--embed-sub,,--embed-thumbnail,,--add-metadata,,--write-description}
       ytdl_custom_downloading_agent: "aria2c"
       ytdl_default_downloader: "yt-dlp"
-      ytdl_default_file_output: ${ytdl_default_file_output:-%(channel).32s [%(channel_id)s]/[%(upload_date)s] %(title).200s [%(id)s]}
+      # BTRFS filename limit is 255 bytes, most japanese characters are 3-byte long, so for `.live_chat.json.part-FragXXX.part` (longest file name) we can have 65 characters for the title
+      ytdl_default_file_output: ${ytdl_default_file_output:-%(channel).32s [%(channel_id)s]/[%(upload_date)s] %(title).65s [%(id)s]}
       ytdl_default_theme: "dark"
       ytdl_url: "https://${YTDLM_HOSTNAME:-localhost}"
       ytdl_use_default_downloading_agent: "false"
